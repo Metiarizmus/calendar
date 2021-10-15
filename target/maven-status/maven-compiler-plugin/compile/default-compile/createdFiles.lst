@@ -1,0 +1,10 @@
+helperData\EmailValidator.class
+servlets\LogIn.class
+serviceJDBC\JDBCServiceUser.class
+servlets\UserMode.class
+entity\User.class
+Main.class
+DBConnection\PropertyInf.class
+DBConnection\DBConnection.class
+entity\Role.class
+servlets\Registration.class
