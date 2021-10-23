@@ -9,10 +9,11 @@ public class Action {
     @Getter @Setter private int id;
     @Getter @Setter private String title;
     @Getter @Setter private String description;
-    @Getter @Setter private Date date;
+    @Getter @Setter private String date;
     @Getter @Setter private TypeAction typeAction;
     @Getter @Setter private User user;
-
+    @Getter @Setter private int idInviteUsers;
+    @Getter @Setter private User invitedUsers;
 
     @Override
     public String toString() {
@@ -20,9 +21,11 @@ public class Action {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", date=" + date +
+                ", date='" + date + '\'' +
                 ", typeAction=" + typeAction +
                 ", user=" + user +
+                ", idInviteUsers=" + idInviteUsers +
+                ", fromUser='" + invitedUsers + '\'' +
                 '}';
     }
 }

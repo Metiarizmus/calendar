@@ -60,7 +60,7 @@ public class HelperGetFullDate {
         calendar1.set(Calendar.YEAR, Integer.parseInt(s[2]));
         calendar1.set(Calendar.MONTH, k);
         calendar1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s[0]));
-        calendar1.set(Calendar.HOUR, Integer.parseInt(ss[0]));
+        calendar1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ss[0]));
         calendar1.set(Calendar.MINUTE, Integer.parseInt(ss[1]));
         calendar1.set(Calendar.SECOND, 0);
 

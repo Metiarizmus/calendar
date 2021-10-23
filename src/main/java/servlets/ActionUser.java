@@ -13,9 +13,11 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 @WebServlet(name = "actionUser", value = "/actionUser")
 public class ActionUser extends HttpServlet {
@@ -37,6 +39,7 @@ public class ActionUser extends HttpServlet {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("id_user");
 
+
         int idUser;
         int idToUser = -1;
 
@@ -49,28 +52,34 @@ public class ActionUser extends HttpServlet {
 
         HelperGetFullDate h = new HelperGetFullDate();
         Date date = h.getFullData(time,dateWithoutTime);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
 
         Action action = new Action();
         action.setTitle(title);
-        action.setDescription(descr);
-        action.setDate(date);
+        action.setDate(dateFormat.format(date));
         idUser = serviceUser.getUserByEmail(email);
         User user = new User();
         user.setId(idUser);
+
         action.setUser(user);
 
+        System.out.println(action);
         if(addGuest!=null) {
             action.setTypeAction(TypeAction.EVENT);
             idToUser = serviceUser.getUserByEmail(addGuest);
+            System.out.println("id to user"+idToUser);
         }else
-        if (descr != null) {
+        if (descr!=null) {
+            action.setDescription(descr);
             action.setTypeAction(TypeAction.TASK);
         }else {
             action.setTypeAction(TypeAction.REMINDER);
         }
 
         serviceAction.addAction(action, idToUser);
+
         log.info("add action in db");
+
 
     }
 }

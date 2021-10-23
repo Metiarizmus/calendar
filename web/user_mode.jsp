@@ -4,6 +4,7 @@
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="true" %>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <!DOCTYPE html>
@@ -12,11 +13,12 @@
     <title>Calendar</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style_user_mode.css">
+    <link rel="stylesheet" href="sidenav.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
-<%session.getAttribute("id_user"); %>
+
 
 <div id="month-calendar">
     <!-- Блок с заголовками (наименования месяца и года) и навигацией (на месяц вперед и назад) -->
@@ -72,6 +74,10 @@
     </ul>
 </div>
 
+<div class="sidenav">
+    <a class="invitation">Приглашения<sup>+4</sup></a>
+</div>
+
 <div class="zatem">
     <div class="okno">
 
@@ -85,26 +91,29 @@
 
             <div id="tab1" class="tab__content">
 
-                <form action="" method="post">
+                <form id="form_tab1" action="actionUser" method="post">
                     <p><input type="text" name="title" placeholder="Введите название"></p>
                     <p>Время мероприятия:<input type="time" name="time"></p>
                     <p><input type="text" name="add_guest" placeholder="Добавьте гостей"></p>
 
-                    <p><input id="event_table" class="action_save" type="submit" value="сохранить"/></p>
                 </form>
-
+                <p>
+                    <button id="event_table" class="action_save" type="submit" value="сохранить" onclick="send_event()">сохранить</button>
+                </p>
             </div>
 
             <div id="tab2" class="tab__content">
-                <form action="" method="post">
+                <form id="form_tab2" action="actionUser" method="post">
 
                     <p><input type="text" name="title" placeholder="Введите название"></p>
                     <p>Время задачи:<input type="time" name="time"></p>
                     <p><textarea name="description" id="" cols="60" rows="4" placeholder="Добавьте описание задачи"></textarea></p>
 
-                    <p><input id="task_table" class="action_save" type="submit" value="сохранить"/></p>
                 </form>
 
+                <p>
+                    <button id="task_table" class="action_save" type="submit" value="сохранить" onclick="send_task()">сохранить</button>
+                </p>
             </div>
 
             <div id="tab3" class="tab__content">
@@ -116,12 +125,13 @@
                 </form>
 
                 <p>
-                    <button id="notif_table" class="action_save" type="submit" value="сохранить" onclick="send_notif()">сохр</button>
+                    <button id="notif_table" class="action_save" type="submit" value="сохранить" onclick="send_notif()">сохранить</button>
                 </p>
             </div>
 
-
         </div>
+
+        <button  class="getAll" type="submit" value="get event" onclick="get_events()">выполнить</button>
 
     </div>
 </div>

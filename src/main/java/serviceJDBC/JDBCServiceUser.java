@@ -8,11 +8,11 @@ import java.sql.*;
 
 public class JDBCServiceUser {
 
-    //private final Connection daoFactory = DBConnection.getInstance().getConnection();
+    private final Connection daoFactory = DBConnection.getConnection();
     private final PropertyInf propertyInf = new PropertyInf();
 
     public Role getByEmailAndPassword(String email, String password) {
-        try (Connection conn = DBConnection.getInstance().getConnection()) {
+        try (Connection conn = daoFactory) {
             try (PreparedStatement stmt = conn.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_BY_EMAIL_AND_PASSWORD"))) {
                 stmt.setString(1, email);
                 stmt.setString(2, password);
@@ -35,9 +35,9 @@ public class JDBCServiceUser {
         int idUser;
         int idRole;
 
-        try(Connection connection = DBConnection.getInstance().getConnection()) {
-             connection.setAutoCommit(false);
-            try (PreparedStatement statementUser = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_USER"),PreparedStatement.RETURN_GENERATED_KEYS)){
+        try (Connection connection = daoFactory) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statementUser = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_USER"), PreparedStatement.RETURN_GENERATED_KEYS)) {
                 String[] sUser = new String[]{user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword()};
 
                 int k = 1;
@@ -49,42 +49,40 @@ public class JDBCServiceUser {
                 try (ResultSet generatedKeys = statementUser.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         idUser = generatedKeys.getInt(1);
-                    }
-                    else {
+                    } else {
                         throw new SQLException("Creating user failed, no ID obtained.");
                     }
                 }
 
-            try (PreparedStatement statementRole = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ROLE"),PreparedStatement.RETURN_GENERATED_KEYS)){
-                statementRole.setString(1, String.valueOf(role));
+                try (PreparedStatement statementRole = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ROLE"), PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    statementRole.setString(1, String.valueOf(role));
 
-                statementRole.executeUpdate();
+                    statementRole.executeUpdate();
 
-                try (ResultSet generatedKeys = statementRole.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        idRole = generatedKeys.getInt(1);
-                    }
-                    else {
-                        throw new SQLException("Creating role failed, no ID obtained.");
+                    try (ResultSet generatedKeys = statementRole.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            idRole = generatedKeys.getInt(1);
+                        } else {
+                            throw new SQLException("Creating role failed, no ID obtained.");
+                        }
                     }
                 }
-            }
 
-            try (PreparedStatement statementUsersRole = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ROLE_USERS"))){
-                String[] sUsersRole = new String[]{String.valueOf(idUser), String.valueOf(idRole)};
+                try (PreparedStatement statementUsersRole = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ROLE_USERS"))) {
+                    String[] sUsersRole = new String[]{String.valueOf(idUser), String.valueOf(idRole)};
 
-                int n = 1;
-                for (String value : sUsersRole) {
-                    statementUsersRole.setString(n++, value);
+                    int n = 1;
+                    for (String value : sUsersRole) {
+                        statementUsersRole.setString(n++, value);
+                    }
+                    statementUsersRole.executeUpdate();
+
                 }
-                statementUsersRole.executeUpdate();
+                connection.commit();
 
             }
-              connection.commit();
-            }
 
-
-        }catch (SQLException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
@@ -92,12 +90,12 @@ public class JDBCServiceUser {
     public int getUserByEmail(String email) {
         int k = 0;
 
-        try (Connection connection = DBConnection.getInstance().getConnection()) {
+        try (Connection connection = daoFactory) {
             try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_USER_BY_EMAIL"))) {
                 statement.setString(1, email);
                 try (ResultSet resultSet = statement.executeQuery()) {
 
-                    if(resultSet.next()) {
+                    if (resultSet.next()) {
                         k = resultSet.getInt("id");
                     }
 
@@ -109,8 +107,30 @@ public class JDBCServiceUser {
         return k;
     }
 
+    public User getUserById(int id) {
+        User user = new User();
+        try (Connection connection = daoFactory) {
+            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_USER_BY_ID"))) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        user.setEmail(resultSet.getString("email"));
+                        user.setFirstName(resultSet.getString("firstName"));
+                        user.setLastName(resultSet.getString("lastName"));
+                        return user;
+                    }
+
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+       return null;
+    }
+
 
     public static void main(String[] args) {
-
+        System.out.println(new JDBCServiceUser().getByEmailAndPassword("admin@mail.ru","admin"));
     }
 }

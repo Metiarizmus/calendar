@@ -87,12 +87,7 @@ function clickOnDay() {
                 arrayData.push(+item.textContent)
                 arrayData.push(monthContainer.textContent)
                 arrayData.push(+yearContainer.textContent)
-                getOkno.style.display = "block";
-                zatemnenie.classList.add('zatemnenie');
-                getOkno.classList.add('styleOkno');
-                html.style.overflow = "hidden";
-                closeBtn.style.opacity = 1;
-                closeBtn.style.cursor = "pointer";
+                openPopup();
                 console.log(arrayData)
             }
         }
@@ -101,6 +96,22 @@ function clickOnDay() {
 
 setInterval(clickOnDay, 100);
 
+
+const invitation = document.querySelector(".invitation");
+
+invitation.onclick = function(){
+    while(getOkno.firstChild){
+        getOkno.removeChild(getOkno.firstChild)
+    }
+
+    getOkno.style.height = "50%"
+    getOkno.style.width = "35%"
+    getOkno.innerHTML = 'Lorem ipsum, sit orci magna pellentesque vivamus nibh magna enim mauris arcu mauris — duis. Ut donec sit pellentesque at eros elementum rutrum porta risus nulla proin eget, pharetra vulputate nulla eros diam, auctor. Mattis pellentesque commodo rutrum metus fusce bibendum urna ultricies eu elementum vitae. Lorem: auctor tellus tempus, magna pharetra enim non auctor et, lorem curabitur urna morbi arcu ipsum ornare urna curabitur ipsum eros pharetra. Fusce nec amet pellentesque mattis pellentesque nam ultricies, quisque maecenas pellentesque mauris sapien. Adipiscing, leo, congue sed leo odio sagittis enim sit — ligula eget, bibendum, morbi congue. Risus arcu porttitor — nec non rutrum vivamus ligula nec amet bibendum, ornare rutrum. Vitae nam arcu sem rutrum eu ligula nam proin porta porttitor ornare tempus ornare nulla, congue vitae molestie. Ornare in ligula sem commodo et: pellentesque magna leo at adipiscing nibh vivamus metus, congue leo. Quam urna orci nam, donec rutrum quisque, auctor: massa molestie leo ornare mattis ipsum quisque. Et ipsum ultricies eget fusce tellus urna: ligula vitae massa quam malesuada ut lectus tempus non ligula nulla et elementum a duis, ornare cursus.'
+    openPopup();
+
+    $(".sidenav a").css("text-shadow","none")
+
+}
 
 
 function openPopup() {
@@ -149,7 +160,7 @@ function check_tab3() {
     document.getElementById("tab3").style.visibility="visible"
 }
 
-let xhr = new XMLHttpRequest();
+
 
 function send_notif() {
 
@@ -157,6 +168,48 @@ function send_notif() {
     var varsData = $.param(Vars);
 
     var formData = $('#form_tab3').serialize();
+
+    const data = varsData + '&' + formData;
+
+    const urlToNotification = window.location.protocol + '//' + window.location.host+"/calendar_manager_Web_exploded/actionUser";
+
+    $.ajax({
+        type: 'POST',
+        url: urlToNotification,
+        data: data,
+        success: function(){ alert ("сохранено") }
+    })
+
+     location.reload();
+}
+
+function send_task() {
+
+    const Vars = {var1: JSON.stringify(arrayData)};
+    const varsData = $.param(Vars);
+
+    const formData = $('#form_tab2').serialize();
+
+    const data = varsData + '&' + formData;
+
+    const urlToNotification = window.location.protocol + '//' + window.location.host+"/calendar_manager_Web_exploded/actionUser";
+
+    $.ajax({
+        type: 'POST',
+        url: urlToNotification,
+        data: data,
+        success: function(){ alert ("сохранено") }
+    })
+
+    location.reload();
+}
+
+function send_event() {
+
+    const Vars = {var1: JSON.stringify(arrayData)};
+    var varsData = $.param(Vars);
+
+    var formData = $('#form_tab1').serialize();
 
     var data = varsData + '&' + formData;
 
@@ -169,5 +222,179 @@ function send_notif() {
         success: function(res){ alert ("сохранено") }
     })
 
-     location.reload();
+    location.reload();
+}
+
+let userEmailNow;
+let xhr1 = new XMLHttpRequest();
+let xhr2 = new XMLHttpRequest();
+function get_events() {
+    const urlToAllEvent = window.location.protocol + '//' + window.location.host+"/calendar_manager_Web_exploded/dateForEvent";
+    const idObj = {"fake": "fake"};
+
+
+    const idJson = JSON.stringify(idObj);
+
+    xhr1.open('POST',urlToAllEvent, true);
+    xhr1.responseType='json';
+
+    xhr1.send(idJson);
+
+    function monthCreate(num) {
+
+        let month;
+
+        switch (+num) {
+            case 1:
+                 month = "январь";
+            break;
+            case 2:
+                month = "февраль";
+                break;
+            case 3:
+                month = "март";
+                break;
+            case 4:
+                month = "апрель";
+                break;
+            case 5:
+                month = "май";
+                break;
+            case 6:
+                month = "июнь";
+                break;
+            case 7:
+                month = "июль";
+                break;
+            case 8:
+                month = "август";
+                break;
+            case 9:
+                month = "сентябрь";
+                break;
+            case 10:
+                month = "октябрь";
+                break;
+            case 11:
+                month = "ноябрь";
+                break;
+            case 12:
+                month = "декабрь";
+                break;
+        }
+
+        return month;
+    }
+
+    xhr1.onreadystatechange = function() {
+
+        if (xhr1.readyState != 4) return;
+
+        let responseObj = xhr1.response;
+
+        let dateSafes = [];
+
+        console.log(responseObj);
+
+        userEmailNow =readCookie("user_email");
+        console.log(userEmailNow)
+
+//         for (let obj of responseObj) {
+//            dateSafes.push(obj.date.split(" ")[0].split("-"));
+//
+//
+//             console.log(monthContainer.textContent)
+//             console.log(yearContainer.textContent)
+//            // if(obj.typeAction === "EVENT") {
+//            //
+//            // } else if (obj.typeAction === "TASK") {
+//            //
+//            // } else {
+//            //
+//            // }
+//         }
+//
+//         console.log(dateSafes)
+//
+// setInterval( () => {
+//
+//         let mon = monthCreate(dateSafes[1]);
+//
+//         if (yearContainer.textContent === dateSafes[0] && monthContainer.textContent === mon) {
+//             console.log(mon);
+//         };
+//     console.log(mon);
+//
+// }, 100);
+//
+
+        if (xhr1.status != 200) {
+            alert(xhr1.status + ': ' + xhr1.statusText);
+        } else {
+
+        }
+
+        xhr1.onprogress = function(event) {
+            alert(`Загружено ${event.loaded} из ${event.total}`);
+        };
+    }
+
+
+    const urlToInviteUsersData = window.location.protocol + '//' + window.location.host+"/calendar_manager_Web_exploded/InvitedEvent";
+    xhr2.open('POST',urlToInviteUsersData, true);
+    xhr2.responseType='json';
+
+    xhr2.send(idJson);
+
+    xhr2.onreadystatechange = function() {
+
+        if (xhr2.readyState != 4) return;
+
+        let responseObj2 = xhr2.response;
+
+        console.log(responseObj2);
+
+        userEmailNow = readCookie("user_email");
+        console.log(userEmailNow)
+
+
+        if (xhr2.status != 200) {
+            alert(xhr2.status + ': ' + xhr2.statusText);
+        } else {
+
+        }
+
+        xhr2.onprogress = function(event) {
+            alert(`Загружено ${event.loaded} из ${event.total}`);
+        };
+    }
+
+}
+
+
+function readCookie(name) {
+
+    const name_cook = name + "=";
+    const spl = document.cookie.split(";");
+
+    for(var i=0; i<spl.length; i++) {
+
+        let c = spl[i];
+
+        while(c.charAt(0) === " ") {
+
+            c = c.substring(1, c.length);
+
+        }
+
+        if(c.indexOf(name_cook) == 0) {
+
+            return c.substring(name_cook.length, c.length);
+
+        }
+
+    }
+
+    return null;
+
 }

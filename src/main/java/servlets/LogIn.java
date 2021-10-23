@@ -30,6 +30,8 @@ public class LogIn extends HttpServlet {
         if(serviceUser.getByEmailAndPassword(email,password).equals(Role.USER)) {
             HttpSession session = request.getSession(true);
             session.setAttribute("id_user", email);
+            Cookie cookie = new Cookie("user_email", email);
+            response.addCookie(cookie);
             log.info("create session with user by email = " + email);
             response.sendRedirect("userMode");
         }
