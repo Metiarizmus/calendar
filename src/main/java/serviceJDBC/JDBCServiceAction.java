@@ -5,6 +5,7 @@ import entity.Action;
 import entity.TypeAction;
 import entity.User;
 
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,17 +15,22 @@ import java.util.List;
 
 public class JDBCServiceAction {
     private final Connection daoFactory = DBConnection.getConnection();
-    private final PropertyInf propertyInf = new PropertyInf();
+    private static final PropertyInf propertyInf = new PropertyInf();
 
     public void addAction(Action action, int idToUser) {
         int idAction;
 
-        try (Connection connection = daoFactory) {
-            connection.setAutoCommit(false);
+        Connection connection = null;
+
+        try {
+            connection = DBConnection.getConnection();
+
             try (PreparedStatement statementAction = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ACTION"), PreparedStatement.RETURN_GENERATED_KEYS)) {
                 String[] s = new String[]{action.getTitle(), action.getDescription(), String.valueOf(action.getDate()), String.valueOf(action.getTypeAction()), String.valueOf(action.getUser().getId())};
 
                 int k = 1;
+                connection.setAutoCommit(false);
+
                 for (String q : s) {
                     statementAction.setString(k++, q);
                 }
@@ -40,9 +46,9 @@ public class JDBCServiceAction {
                     }
                 }
 
-
-                if (action.getTypeAction().equals(TypeAction.EVENT)) {
+                if (action.getTypeAction().equals(TypeAction.EVENT) && idToUser > 0) {
                     try (PreparedStatement statementInvite = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_INVITE_USERS"))) {
+
                         String[] ss = new String[]{String.valueOf(idAction), String.valueOf(idToUser)};
                         int kk = 1;
                         for (String q : ss) {
@@ -52,23 +58,52 @@ public class JDBCServiceAction {
                     }
                 }
                 connection.commit();
+
+                connection.setAutoCommit(true);
                 System.out.println("action add in db");
 
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } finally {
+            try {
+                if (!connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                System.err.println("connection close error");
+            }
+
         }
 
     }
 
-
     public List<Action> getAllActionForUser(String email) {
         List<Action> list = new ArrayList<>();
 
-        try (Connection connection = daoFactory) {
+        try (Connection connection = DBConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_FULL_ACTION"))) {
-                statement.setString(1,email);
+                statement.setString(1, email);
+                try (ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        list.add(getInfAction(result));
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return list;
+    }
+
+    public List<Action> getAllActionUserForManager() {
+        List<Action> list = new ArrayList<>();
+
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_FULL_ACTION_MANAGER"))) {
                 try (ResultSet result = statement.executeQuery()) {
                     while (result.next()) {
                         list.add(getInfAction(result));
@@ -86,9 +121,9 @@ public class JDBCServiceAction {
     public List<Action> getAllActionInvite(String inviteUsersEmail) {
         List<Action> list = new ArrayList<>();
 
-        try (Connection connection = daoFactory) {
+        try (Connection connection = DBConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_INVITE_USERS"))) {
-                statement.setString(1,inviteUsersEmail);
+                statement.setString(1, inviteUsersEmail);
                 try (ResultSet result = statement.executeQuery()) {
                     while (result.next()) {
                         list.add(getInfAction(result));
@@ -101,6 +136,70 @@ public class JDBCServiceAction {
 
 
         return list;
+    }
+
+    public Action getActionById(int id) {
+        Action action = new Action();
+        try (Connection connection = DBConnection.getConnection()) {
+
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_ACTION_BY_ID"))) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        action.setTitle(resultSet.getString("title"));
+                        action.setDate(resultSet.getString("date"));
+                        action.setTypeAction(TypeAction.valueOf(resultSet.getString("type_action")));
+                        action.setDescription(resultSet.getString("description"));
+                        return action;
+                    }
+
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return action;
+    }
+
+    public boolean deletedInvite(int id) {
+        try (Connection connection = DBConnection.getConnection()) {
+
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("DELETE_INVITE_BY_ID"))) {
+                statement.setInt(1, id);
+
+                int k = statement.executeUpdate();
+                if (k > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public int[] getDataFromInvited(int id) {
+        int[] k = new int[2];
+
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_ID_ACTION_FROM_INVITED"))) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        k[0] = resultSet.getInt("action_id");
+                        k[1] = resultSet.getInt("users_id");
+
+                    }
+
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return k;
     }
 
     private static Action getInfAction(ResultSet result) throws SQLException {
@@ -119,6 +218,11 @@ public class JDBCServiceAction {
     }
 
 
+    public static void main(String[] args) {
 
 
+        for (Action q : new JDBCServiceAction().getAllActionUserForManager()){
+            System.out.println(q);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package servlets;
 import entity.Role;
 import entity.User;
 import helperData.EmailValidator;
+import helperData.OnlineUsersCounter;
 import org.apache.log4j.Logger;
 import serviceJDBC.JDBCServiceUser;
 
@@ -39,6 +40,7 @@ public class Registration extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("id_user", email);
                 serviceUser.addUser(user, Role.USER);
+                System.out.println("online reg: " + OnlineUsersCounter.getNumberOfUsersOnline());
                 response.sendRedirect("userMode");
 
             }

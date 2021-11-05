@@ -1,20 +1,29 @@
-import entity.Action;
-import entity.User;
-import serviceJDBC.JDBCServiceAction;
-import serviceJDBC.JDBCServiceUser;
 
-import java.util.ArrayList;
+import entity.Action;
+import entity.Role;
+import serviceJDBC.JDBCServiceAction;
+
+import java.time.LocalDate;
 import java.util.List;
+
 
 class Main {
     public static void main(String[] args) {
 
-        List<Action> actionList = new JDBCServiceAction().getAllActionInvite("admin@mail.ru");
+        List<Action> actionList = new JDBCServiceAction().getAllActionUserForManager();
 
-        User user = new JDBCServiceUser().getUserById(actionList.get(0).getIdInviteUsers());
-        actionList.get(0).setInvitedUsers(user);
-        System.out.println(actionList);
-        System.out.println(user);
+        for (int i = 0; i < actionList.size(); i++) {
+            if (actionList.get(i).getUser().getRole().equals(Role.MANAGER) || actionList.get(i).getUser().getRole().equals(Role.ADMIN)) {
+                actionList.remove(i);
+            }
+        }
+
+        for (Action q : actionList) {
+            System.out.println(q);
+        }
+
+
+
 
     }
 }

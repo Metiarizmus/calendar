@@ -1,10 +1,7 @@
 .sidenav {
     height: 100%;
-    width: 190px;
+    width: 17%;
     position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
     background-color: rgb(53, 50, 50);
     overflow-x: hidden;
     padding-top: 20px;
@@ -13,7 +10,7 @@
 .sidenav a {
     padding: 6px 8px 6px 16px;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 22px;
     color: #818181;
     display: block;
 }
@@ -41,4 +38,19 @@
     text-align: center;
 
     text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+}
+
+.sidenav p {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 22px;
+    color: #fff;
+    text-align: center;
+    display: block;
+    margin-top:20px
+}
+
+.sidenav p:hover {
+    cursor:pointer;
+    font-size: 25px;
 }

@@ -18,65 +18,71 @@
 </head>
 <body>
 
+<div class="content">
+
+    <div class="sidenav">
+        <form id="formInvite" action="invitedData" method="post">
+            <a class="invitation" onclick="document.getElementById('formInvite').submit(); return false;">Приглашения<sup class="sup">+</sup></a>
+        </form>
+    </div>
+
+    <div id="month-calendar">
+        <!-- Блок с заголовками (наименования месяца и года) и навигацией (на месяц вперед и назад) -->
+        <ul class="month">
+            <div class="arrow">
+                <li class="prev"><button><img src="left_row.png" width="50px" onclick="btn_prevt()"></button></li>
+                <li class="next"><button><img src="right_row.png" width="50px" onclick="btn_next()"></button></li>
+            </div>
+            <li class="month-name"></li>
+            <li class="year-name"></li>
+        </ul>
+        <ul class="weekdays">
+            <li>Пн</li>
+            <li>Вт</li>
+            <li>Ср</li>
+            <li>Чт</li>
+            <li>Пт</li>
+            <li>Сб</li>
+            <li>Вс</li>
+        </ul>
+        <!-- табличная часть, дни месяца -->
+        <ul class="days">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+            <li>6</li>
+            <li>7</li>
+            <li>8</li>
+            <li>9</li>
+            <li>10</li>
+            <li>11</li>
+            <li>12</li>
+            <li>13</li>
+            <li>14</li>
+            <li>15</li>
+            <li>16</li>
+            <li>17</li>
+            <li>18</li>
+            <li>19</li>
+            <li>21</li>
+            <li>22</li>
+            <li>23</li>
+            <li>24</li>
+            <li>25</li>
+            <li>26</li>
+            <li>27</li>
+            <li>28</li>
+            <li>29</li>
+            <li>30</li>
+            <li>31</li>
+        </ul>
+    </div>
 
 
-<div id="month-calendar">
-    <!-- Блок с заголовками (наименования месяца и года) и навигацией (на месяц вперед и назад) -->
-    <ul class="month">
-        <div class="arrow">
-            <li class="prev"><button><img src="left_row.png" width="50px" onclick="btn_prevt()"></button></li>
-            <li class="next"><button><img src="right_row.png" width="50px" onclick="btn_next()"></button></li>
-        </div>
-        <li class="month-name"></li>
-        <li class="year-name"></li>
-    </ul>
-    <ul class="weekdays">
-        <li>Пн</li>
-        <li>Вт</li>
-        <li>Ср</li>
-        <li>Чт</li>
-        <li>Пт</li>
-        <li>Сб</li>
-        <li>Вс</li>
-    </ul>
-    <!-- табличная часть, дни месяца -->
-    <ul class="days">
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>6</li>
-        <li>7</li>
-        <li>8</li>
-        <li>9</li>
-        <li>10</li>
-        <li>11</li>
-        <li>12</li>
-        <li>13</li>
-        <li>14</li>
-        <li>15</li>
-        <li>16</li>
-        <li>17</li>
-        <li>18</li>
-        <li>19</li>
-        <li>21</li>
-        <li>22</li>
-        <li>23</li>
-        <li>24</li>
-        <li>25</li>
-        <li>26</li>
-        <li>27</li>
-        <li>28</li>
-        <li>29</li>
-        <li>30</li>
-        <li>31</li>
-    </ul>
 </div>
 
-<div class="sidenav">
-    <a class="invitation">Приглашения<sup>+4</sup></a>
-</div>
 
 <div class="zatem">
     <div class="okno">
@@ -131,7 +137,6 @@
 
         </div>
 
-        <button  class="getAll" type="submit" value="get event" onclick="get_events()">выполнить</button>
 
     </div>
 </div>

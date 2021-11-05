@@ -1,4 +1,4 @@
-package servlets;
+package servlets.userService;
 
 import com.google.gson.Gson;
 import entity.Action;
@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "dateForEvent", value = "/dateForEvent")
-public class AllEvent extends HttpServlet {
+@WebServlet(name = "InvitedEvent", value = "/InvitedEvent")
+public class dataForInviteUsers extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -29,26 +29,22 @@ public class AllEvent extends HttpServlet {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("id_user");
 
+        List<Action> actionList = new JDBCServiceAction().getAllActionInvite(email);
+        List<Integer> idInvitedUsers = new ArrayList<>();
 
-        List<Action> actionList = new JDBCServiceAction().getAllActionForUser(email);
-
-        List<Integer> idToUsers = new ArrayList<>();
-
-        for (Action action : actionList) {
-            idToUsers.add(action.getIdInviteUsers());
+        for (Action q : actionList) {
+            idInvitedUsers.add(q.getIdInviteUsers());
         }
 
+        for (int i = 0; i < idInvitedUsers.size(); i++) {
+            User user = new JDBCServiceUser().getUserById(idInvitedUsers.get(i));
 
-        for (int i = 0; i < idToUsers.size(); i++) {
-            actionList.get(i).setInvitedUsers(new JDBCServiceUser().getUserById(idToUsers.get(i)));
+            actionList.get(i).setInvitedUsers(user);
         }
-
-        System.out.println(actionList);
 
         String json = new Gson().toJson(actionList);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
-
     }
 }

@@ -5,6 +5,8 @@ import entity.Role;
 import entity.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JDBCServiceUser {
 
@@ -12,7 +14,7 @@ public class JDBCServiceUser {
     private final PropertyInf propertyInf = new PropertyInf();
 
     public Role getByEmailAndPassword(String email, String password) {
-        try (Connection conn = daoFactory) {
+        try (Connection conn = DBConnection.getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_BY_EMAIL_AND_PASSWORD"))) {
                 stmt.setString(1, email);
                 stmt.setString(2, password);
@@ -87,10 +89,23 @@ public class JDBCServiceUser {
         }
     }
 
+
+    public void addSuspend(int id){
+        try(Connection connection = DBConnection.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_SUSPEND_USERS"))){
+                statement.setInt(1,id);
+                statement.executeUpdate();
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public int getUserByEmail(String email) {
         int k = 0;
 
-        try (Connection connection = daoFactory) {
+        try (Connection connection = DBConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_USER_BY_EMAIL"))) {
                 statement.setString(1, email);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -109,7 +124,7 @@ public class JDBCServiceUser {
 
     public User getUserById(int id) {
         User user = new User();
-        try (Connection connection = daoFactory) {
+        try (Connection connection = DBConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_USER_BY_ID"))) {
                 statement.setInt(1, id);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -129,8 +144,48 @@ public class JDBCServiceUser {
        return null;
     }
 
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
+
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_ALL_EMAIL"))) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    while (resultSet.next()) {
+                        User user = new User();
+                        user.setFirstName(resultSet.getString("firstName"));
+                        user.setLastName(resultSet.getString("lastName"));
+                        user.setEmail(resultSet.getString("email"));
+                        user.setSuspend(resultSet.getInt("suspend"));
+                        list.add(user);
+                    }
+
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean deletedUsers(int id) {
+        try (Connection connection = DBConnection.getConnection()) {
+
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("DELETE_USERS_BY_ID"))) {
+                statement.setInt(1, id);
+
+                int k = statement.executeUpdate();
+                if (k > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
-        System.out.println(new JDBCServiceUser().getByEmailAndPassword("admin@mail.ru","admin"));
+
     }
 }
