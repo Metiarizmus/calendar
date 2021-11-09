@@ -47,6 +47,8 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role +
+                ", suspend=" + suspend +
                 '}';
     }
 }

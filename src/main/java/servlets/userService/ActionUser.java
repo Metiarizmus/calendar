@@ -64,7 +64,6 @@ public class ActionUser extends HttpServlet {
 
         action.setUser(user);
 
-
         int l = 0;
         if (addGuest != null) {
 
@@ -118,7 +117,6 @@ public class ActionUser extends HttpServlet {
 
         if (l == 0) {//fake response
             String json = new Gson().toJson("string:1");
-            System.out.println("json = " + json);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json);

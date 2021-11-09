@@ -33,6 +33,10 @@ let reqObj = [];
 //array for click on day
 let arrayData = [];
 
+
+//chek suspend for user
+let suspendUser = false;
+
 let curDate = nowDate.setMonth(nowDate.getMonth() - 1); // создаем экземпляр объекта для определенной календарной даты;
 
 
@@ -154,6 +158,11 @@ xhr1.onreadystatechange = function () {
     userEmailNow = readCookie("user_email");
 
     for (let obj of responseObj) {
+
+        if(+obj.user.suspend === 1){
+            suspendUser = true;
+        }
+
         if (obj.typeAction === "REMINDER") {
             dateSafesRem.push(obj.date.split(" ")[0].split("-"));
         } else if (obj.typeAction === "TASK") {
@@ -211,6 +220,7 @@ function clickOnDay() {
     const day = document.querySelectorAll(".day");
     arrayDataCopy = [];
 
+
     let z = 0;
     day.forEach(item => {
 
@@ -223,6 +233,7 @@ function clickOnDay() {
             console.log("arrayDataCopy ", arrayDataCopy)
 
             for (let obj of currentObjOnMonth) {
+
                 if (arrayDataCopy[0] == parseInt(obj.date.split(" ")[0].split("-")[2])) {
                     z = 1;
 
@@ -268,12 +279,15 @@ function clickOnDay() {
 setInterval(clickOnDay, 100);
 
 function openPopup() {
-    getOkno.style.display = "block";
-    zatemnenie.classList.add('zatemnenie');
-    getOkno.classList.add('styleOkno');
-    html.style.overflow = "hidden";
-    closeBtn.style.opacity = 1;
-    closeBtn.style.cursor = "pointer";
+    if (suspendUser === false) {
+        getOkno.style.display = "block";
+        zatemnenie.classList.add('zatemnenie');
+        getOkno.classList.add('styleOkno');
+        html.style.overflow = "hidden";
+        closeBtn.style.opacity = 1;
+        closeBtn.style.cursor = "pointer";
+    }else alert("Простите вас заблокировал админ")
+
 }
 
 closeBtn.addEventListener("click", function () {
@@ -336,7 +350,7 @@ function send_notif() {
         }
     })
 
-    window.location.reload()
+    location.reload()
 }
 
 function send_task() {
@@ -359,7 +373,7 @@ function send_task() {
         }
     })
 
-    window.location.reload()
+    location.reload()
 }
 
 function send_event() {
@@ -382,6 +396,8 @@ function send_event() {
             closePopup();
         }
     })
+
+    location.reload();
 }
 
 let xhr2 = new XMLHttpRequest();

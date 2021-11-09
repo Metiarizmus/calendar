@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @WebServlet(name = "listUsersAdmin", value = "/listUsersAdmin")
@@ -24,10 +25,16 @@ public class ListUsersAdmin extends HttpServlet {
         List<User> userList = serviceUser.getAllUsers();
 
         for (int i = 0; i < userList.size(); i++) {
-            if(userList.get(i).getRole().equals(Role.MANAGER) || userList.get(i).getRole().equals(Role.ADMIN)){
-                userList.remove(i);
+            if((userList.get(i).getRole().equals(Role.MANAGER)) ){
+                userList.set(i,null);
+            }else
+            if ((userList.get(i).getRole().equals(Role.ADMIN))){
+                userList.set(i,null);
             }
         }
+
+
+        userList.removeAll(Collections.singleton(null));
 
         request.setAttribute("users", userList);
 

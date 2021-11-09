@@ -1,5 +1,7 @@
 package helperData;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -66,5 +68,26 @@ public class HelperGetFullDate {
 
         java.util.Date date1 = calendar1.getTime();
         return date1;
+    }
+
+    public String[] getNowDateAndPlusMonth() {
+        String[] s = new String[2];
+        String[] todaydate = String.valueOf(LocalDate.now()).split("-");
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(Integer.parseInt(todaydate[0]),Integer.parseInt(todaydate[1])-1,Integer.parseInt(todaydate[2]));
+
+        Calendar calendar1 = new GregorianCalendar();
+        calendar1.set(Integer.parseInt(todaydate[0]),Integer.parseInt(todaydate[1]),Integer.parseInt(todaydate[2]));
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String s1 = dateFormat.format(calendar.getTime());
+        String s2 = dateFormat.format(calendar1.getTime());
+
+        s[0] = s1;
+        s[1] = s2;
+
+        return s;
     }
 }

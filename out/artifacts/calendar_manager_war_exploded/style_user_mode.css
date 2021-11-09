@@ -1,0 +1,281 @@
+*::after,
+*::before,
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    width: 100%;
+    font-family: "Lato", sans-serif;
+
+}
+
+/* месяцы и годы */
+
+.month{
+    margin: 0;
+    padding: 3rem 2rem 2rem;
+    background: #555555;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+    list-style: none;
+}
+
+.month li{
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.month li.prev,
+.month li.next{
+    cursor: pointer;
+}
+
+
+.month li.year-name{
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+/* дни недели */
+.weekdays{
+    margin: 0;
+    padding: 1rem 0;
+    background-color: #dddddd;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+    border-bottom: 2px solid black;
+}
+
+.weekdays li{
+    display: block;
+    flex: 0 0 calc(100% / 7);
+    text-align: center;
+}
+
+/* дни */
+.days{
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-content: flex-start;
+    height: 14rem;
+    padding-inline-start:unset ;
+
+}
+
+
+
+.days li{
+    padding: 0.5rem;
+    list-style: none;
+    display: inline-block;
+    flex: 0 0 calc(100% / 7);
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    line-height: 1rem;
+
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.days li.date-now{
+    color: #000;
+    font-weight: bold;
+    font-weight: 700;
+}
+
+.arrow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.days li:hover {
+    background-color: rgb(134, 134, 134);
+    color: #fff;
+    font-size: 1rem;
+}
+
+
+/* ------------------------------- */
+
+.okno {
+    text-align: center;
+    display: none;
+
+    overflow: auto;
+    width: 200px;
+    height: 100px;
+    border: 1px solid black;
+}
+
+.styleOkno {
+    width:30%;
+    height: 35%;
+    text-align: center;
+    border: 3px solid #fff;
+    border-radius: 20px;
+    background: #fff;
+    color: #333;
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+
+.zatemnenie {
+    background: rgba(102, 102, 102, 0.9);
+    width: 100%;
+    height: 1500%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+.closeBtn {
+    width: 100px;
+    border-radius: 25px;
+    background: red;
+    border: 2px solid red;
+    font-family: sans-serif;
+    height: 35px;
+    box-shadow: 0px 0px 4px 1px red;
+    color: #fff;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: default;
+    transition: 0.4s;
+    opacity: 0;
+}
+.closeBtn:hover {
+    transform: scale(1.1);
+}
+
+ul.menu {
+    margin: 0; /* Обнуляем значение отступов */
+    padding: 4px; /* Значение полей */
+}
+ul.menu li {
+    display: inline; /* Отображать как строчный элемент */
+    margin-right: 5px; /* Отступ слева */
+    border: 1px solid #000; /* Рамка вокруг текста */
+    padding: 3px; /* Поля вокруг текста */
+}
+.menu a {
+    text-decoration: none;
+    color: rgb(223, 94, 94);
+    font-weight: bold;
+}
+
+
+
+.action_save {
+    width: 100px;
+    border-radius: 25px;
+    background: red;
+    border: 2px solid red;
+    font-family: sans-serif;
+    height: 35px;
+    box-shadow: 0px 0px 4px 1px red;
+    color: #fff;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    margin-top:30px
+}
+
+#tab1, #tab2, #tab3 {
+    visibility: hidden;
+}
+
+.arrow li {
+    border: none;
+    outline:none;
+}
+
+.rem{
+    background-color: #4b4b8d;
+}
+
+.event {
+    background-color: #c41e3a;
+}
+
+.task {
+    background-color: aqua;
+}
+
+#month-calendar{
+    width: 83%;
+    height: 100%;
+    float: right;
+}
+
+.content{
+    width: 100%;
+    height: 100%;
+}
+
+.p_innerHtml p {
+    margin:10px
+}
+
+.invitation:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+.accepted:hover {
+    cursor: pointer;
+}
+
+.reject:hover {
+    cursor: pointer;
+}
+
+.btn_back {
+    width: 200px;
+    height: 30px;
+    border-radius: 25px;
+    background: red;
+    border: 2px solid #00008b;
+    color: #fff8f8;
+    position: fixed;
+    top: 10%;
+    right: 10%;
+    box-shadow: 0px 0px 4px 1px #00008b;
+    transition: 0.4s;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align:-webkit-center;
+
+}
+
+.btn_back:hover {
+    background-color: #00008b;
+    transform: scale(1.1);
+    border: 2px solid red;
+}

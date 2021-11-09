@@ -3,7 +3,7 @@ package servlets;
 import entity.Role;
 import entity.User;
 import helperData.EmailValidator;
-import helperData.OnlineUsersCounter;
+import helperData.SessionCounter;
 import org.apache.log4j.Logger;
 import serviceJDBC.JDBCServiceUser;
 
@@ -27,6 +27,9 @@ public class Registration extends HttpServlet {
         EmailValidator validator = new EmailValidator();
         JDBCServiceUser serviceUser = new JDBCServiceUser();
 
+        String addUserFromAdmin = request.getParameter("parametr");
+        System.out.println("addUserFromAdmin = " + addUserFromAdmin);
+
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
@@ -37,11 +40,16 @@ public class Registration extends HttpServlet {
 
                 User user = new User(firstName,lastName,email,password);
                 log.info("add user to db");
-                HttpSession session = request.getSession(true);
-                session.setAttribute("id_user", email);
-                serviceUser.addUser(user, Role.USER);
-                System.out.println("online reg: " + OnlineUsersCounter.getNumberOfUsersOnline());
-                response.sendRedirect("userMode");
+
+                if (addUserFromAdmin == null){
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("id_user", email);
+                    SessionCounter counter = (SessionCounter) session.getAttribute(SessionCounter.COUNTER);
+                    response.sendRedirect("userMode");
+                }else {
+                    serviceUser.addUser(user, Role.USER);
+                    log.info("add user from admin mode");
+                }
 
             }
         }

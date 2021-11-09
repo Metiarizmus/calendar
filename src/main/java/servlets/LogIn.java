@@ -1,7 +1,7 @@
 package servlets;
 
 import entity.Role;
-import helperData.OnlineUsersCounter;
+import helperData.SessionCounter;
 import org.apache.log4j.Logger;
 import serviceJDBC.JDBCServiceUser;
 
@@ -46,6 +46,9 @@ public class LogIn extends HttpServlet {
             Cookie cookie = new Cookie("user_email", email);
             response.addCookie(cookie);
             log.info("create session with user by email = " + email);
+
+            SessionCounter counter = (SessionCounter) session.getAttribute(SessionCounter.COUNTER);
+
             response.sendRedirect("userMode");
         }else
         if(serviceUser.getByEmailAndPassword(email,password).equals(Role.ADMIN)) {
@@ -53,7 +56,6 @@ public class LogIn extends HttpServlet {
 
             session.setAttribute("id_user", email);
 
-            //System.out.println("online login: " + OnlineUsersCounter.getNumberOfUsersOnline());
             Cookie cookie = new Cookie("user_email", email);
             response.addCookie(cookie);
             log.info("create session with admin by email = " + email);

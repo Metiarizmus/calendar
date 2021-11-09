@@ -89,10 +89,21 @@ public class JDBCServiceUser {
         }
     }
 
-
-    public void addSuspend(int id){
+    public void suspendUser(int id){
         try(Connection connection = DBConnection.getConnection()){
             try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_SUSPEND_USERS"))){
+                statement.setInt(1,id);
+                statement.executeUpdate();
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void anSuspendUser(int id){
+        try(Connection connection = DBConnection.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("DELETED_SUSPEND_USERS"))){
                 statement.setInt(1,id);
                 statement.executeUpdate();
 
@@ -122,6 +133,25 @@ public class JDBCServiceUser {
         return k;
     }
 
+    public Role getRoleUsersById(int id) {
+
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_ROLE_BY_USERS_ID"))) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                         return Role.valueOf(resultSet.getString("role"));
+                    }
+
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+
     public User getUserById(int id) {
         User user = new User();
         try (Connection connection = DBConnection.getConnection()) {
@@ -148,15 +178,17 @@ public class JDBCServiceUser {
         List<User> list = new ArrayList<>();
 
         try (Connection connection = DBConnection.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_ALL_EMAIL"))) {
+            try (PreparedStatement statement = connection.prepareStatement(new PropertyInf().getSqlQuery().getProperty("GET_ALL_USERS"))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
 
                     while (resultSet.next()) {
                         User user = new User();
+                        user.setId(resultSet.getInt("id"));
                         user.setFirstName(resultSet.getString("firstName"));
                         user.setLastName(resultSet.getString("lastName"));
                         user.setEmail(resultSet.getString("email"));
                         user.setSuspend(resultSet.getInt("suspend"));
+                        user.setRole(Role.valueOf(resultSet.getString("role")));
                         list.add(user);
                     }
 
@@ -173,11 +205,14 @@ public class JDBCServiceUser {
 
             try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("DELETE_USERS_BY_ID"))) {
                 statement.setInt(1, id);
+                statement.execute("SET FOREIGN_KEY_CHECKS=0");
 
                 int k = statement.executeUpdate();
                 if (k > 0) {
                     return true;
                 }
+
+                statement.execute("SET FOREIGN_KEY_CHECKS=1");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -185,7 +220,10 @@ public class JDBCServiceUser {
         return false;
     }
 
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
+        System.out.println(new JDBCServiceUser().getRoleUsersById(6));
     }
+
+
 }

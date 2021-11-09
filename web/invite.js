@@ -19,7 +19,7 @@ accepted.forEach((item, index) => {
             }
         });
 
-        window.location.href=window.location.href
+        location.reload();
     }
 })
 
@@ -39,12 +39,11 @@ reject.forEach((item, index) => {
             }
         });
 
-        window.location.href=window.location.href
+        location.reload();
 
     }
 })
 
-// document.querySelectorAll(".btn_back").onclick = history.go(-1);
 
 const btn_back = document.querySelectorAll(".btn_back");
 

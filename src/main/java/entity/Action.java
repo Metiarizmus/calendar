@@ -11,6 +11,7 @@ public class Action {
     @Getter @Setter private String description;
     @Getter @Setter private String date;
     @Getter @Setter private TypeAction typeAction;
+    @Getter @Setter private int acceptedEvent;
     @Getter @Setter private User user;
     @Getter @Setter private int idInviteUsers;
     @Getter @Setter private User invitedUsers;

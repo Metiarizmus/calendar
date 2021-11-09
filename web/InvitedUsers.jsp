@@ -42,9 +42,7 @@
 
 
 <div id="my_button">
-
         <p class="btn_back">back</p>
-
 </div>
 
 <script src="invite.js"></script>

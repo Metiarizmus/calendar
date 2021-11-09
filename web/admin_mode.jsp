@@ -34,7 +34,7 @@
         </form>
 
         <form id="formManagerForAdmin" action="listManagerAdmin" method="post">
-            <p class="infoUsers" onclick="document.getElementById('formUsersForAdmin').submit(); return false;">Менеджеры</p>
+            <p class="infoUsers" onclick="document.getElementById('formManagerForAdmin').submit(); return false;">Менеджеры</p>
         </form>
 
     </div>

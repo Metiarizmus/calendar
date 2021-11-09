@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <html>
 <head>
-    <title>Invited</title>
+    <title>Actions</title>
     <link rel="stylesheet" href="style_user_mode.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -36,7 +36,7 @@
 
 
 <div id="my_button">
-    <form action="managerMode" method="get" >
+    <form action="adminMode" method="get" >
         <p><input class="btn_back" type="submit" value="back"/></p>
     </form>
 </div>

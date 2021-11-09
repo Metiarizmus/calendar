@@ -10,15 +10,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 public class JDBCServiceAction {
     private final Connection daoFactory = DBConnection.getConnection();
     private static final PropertyInf propertyInf = new PropertyInf();
 
-    public void addAction(Action action, int idToUser) {
-        int idAction;
+    public int addAction(Action action, int idToUser) {
+        int idAction = 0;
+        int idActionFromInvite = 0;
 
         Connection connection = null;
 
@@ -47,16 +49,19 @@ public class JDBCServiceAction {
                 }
 
                 if (action.getTypeAction().equals(TypeAction.EVENT) && idToUser > 0) {
-                    try (PreparedStatement statementInvite = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_INVITE_USERS"))) {
 
-                        String[] ss = new String[]{String.valueOf(idAction), String.valueOf(idToUser)};
-                        int kk = 1;
-                        for (String q : ss) {
-                            statementInvite.setString(kk++, q);
+                        try (PreparedStatement statementInvite = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_INVITE_USERS"))) {
+
+                            String[] ss = new String[]{String.valueOf(idAction), String.valueOf(idToUser)};
+                            int kk = 1;
+                            for (String q : ss) {
+                                statementInvite.setString(kk++, q);
+                            }
+                            statementInvite.executeUpdate();
+
                         }
-                        statementInvite.executeUpdate();
-                    }
                 }
+
                 connection.commit();
 
                 connection.setAutoCommit(true);
@@ -77,6 +82,7 @@ public class JDBCServiceAction {
 
         }
 
+        return idAction;
     }
 
     public List<Action> getAllActionForUser(String email) {
@@ -202,6 +208,61 @@ public class JDBCServiceAction {
         return k;
     }
 
+
+    public void changeAcceptedEvent(int id) {
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("ADD_ACCEPTED_EVENT"))) {
+                statement.setInt(1, id);
+                statement.executeUpdate();
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public List<Action> actionBetweenDate(String start, String end) {
+        List<Action> list = new ArrayList<>();
+
+        try (Connection connection = DBConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_ACTION_BETWEEN"))) {
+                statement.setString(1, start);
+                statement.setString(2, end);
+                try (ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        list.add(getInfAction(result));
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return list;
+    }
+
+    public int countAcceptedEventBetweenDate(String start, String end){
+        int k = 0;
+        try(Connection connection = DBConnection.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement(propertyInf.getSqlQuery().getProperty("GET_COUNT_ACCEPTED_MONTH"))){
+                statement.setString(1, start);
+                statement.setString(2,end);
+                try (ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        if(result.getInt("accepted_event") == 1){
+                            k++;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return k;
+    }
+
     private static Action getInfAction(ResultSet result) throws SQLException {
         User user = new User();
         Action action = new Action();
@@ -210,7 +271,9 @@ public class JDBCServiceAction {
         action.setTitle(result.getString("title"));
         action.setDate(result.getString("date"));
         action.setTypeAction(TypeAction.valueOf(result.getString("type_action")));
+        action.setAcceptedEvent(result.getInt("accepted_event"));
         user.setEmail(result.getString("email"));
+        user.setSuspend(result.getInt("suspend"));
         action.setUser(user);
         action.setIdInviteUsers(result.getInt("users_id"));
 
@@ -219,10 +282,8 @@ public class JDBCServiceAction {
 
 
     public static void main(String[] args) {
+        JDBCServiceAction serviceAction = new JDBCServiceAction();
 
-
-        for (Action q : new JDBCServiceAction().getAllActionUserForManager()){
-            System.out.println(q);
-        }
+        System.out.println(serviceAction.countAcceptedEventBetweenDate("2021-01-08","2021-11-18"));
     }
 }

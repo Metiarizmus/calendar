@@ -1,8 +1,5 @@
 package servlets.adminService;
 
-import entity.Action;
-import entity.User;
-import serviceJDBC.JDBCServiceAction;
 import serviceJDBC.JDBCServiceUser;
 
 import javax.servlet.*;
@@ -45,8 +42,11 @@ public class DeletedUsersAdmin extends HttpServlet {
             response.getWriter();
         }else if(s[0].equals("id_users_suspend")){
             System.out.println("suspend");
-            serviceUser.addSuspend(id);
-
+            serviceUser.suspendUser(id);
+        }else if(s[0].equals("id_users_unSuspend")){
+            System.out.println("unSuspend");
+            serviceUser.anSuspendUser(id);
         }
+
     }
 }
