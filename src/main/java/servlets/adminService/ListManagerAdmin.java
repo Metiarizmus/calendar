@@ -1,8 +1,8 @@
 package servlets.adminService;
 
-import entity.Role;
+import enums.Role;
 import entity.User;
-import serviceJDBC.JDBCServiceUser;
+import service.JDBCServiceUser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -22,18 +22,8 @@ public class ListManagerAdmin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         JDBCServiceUser serviceUser = new JDBCServiceUser();
-        List<User> managerList = serviceUser.getAllUsers();
+        List<User> managerList = serviceUser.getUsersByRole(Role.MANAGER);
 
-        for (int i = 0; i < managerList.size(); i++) {
-            if((managerList.get(i).getRole().equals(Role.USER)) ){
-                managerList.set(i,null);
-            }else
-            if ((managerList.get(i).getRole().equals(Role.ADMIN))){
-                managerList.set(i,null);
-            }
-        }
-
-        managerList.removeAll(Collections.singleton(null));
         request.setAttribute("manager", managerList);
 
         getServletContext().getRequestDispatcher("/listManagerForAdmin.jsp").forward(request,response);

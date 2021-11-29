@@ -1,10 +1,10 @@
 package servlets.managerService;
 
 import entity.Action;
-import helperData.HelperGetFullDate;
-import helperData.HelperOnlyUser;
-import helperData.SessionCounter;
-import serviceJDBC.JDBCServiceAction;
+import helper.HelperGetFullDate;
+import helper.HelperOnlyUser;
+import helper.SessionCounter;
+import service.JDBCServiceAction;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -26,13 +26,13 @@ public class managerCharts extends HttpServlet {
         HelperGetFullDate helperGetFullDate = new HelperGetFullDate();
         String[] date = helperGetFullDate.getNowDateAndPlusMonth();
 
-        List<Action> actionListUser = serviceAction.actionBetweenDate(date[0],date[1]);
+        List<Action> actionListUser = serviceAction.actionBetweenDate(date[1],date[0]);
 
         HelperOnlyUser helperOnlyUser = new HelperOnlyUser();
 
         List<Action> list = helperOnlyUser.getActionForUser(actionListUser);
 
-        int countEventMonth = serviceAction.countAcceptedEventBetweenDate(date[0], date[1]);
+        int countEventMonth = serviceAction.countAcceptedEventBetweenDate(date[1], date[0]);
 
         HttpSession session = request.getSession();
         session.getAttribute("id_user");

@@ -1,11 +1,12 @@
 package servlets.adminService;
 
-import serviceJDBC.JDBCServiceUser;
+import enums.State;
+import helper.BaseInServlets;
+import service.JDBCServiceUser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet(name = "deletedUsersAdmin", value = "/deletedUsersAdmin")
@@ -16,36 +17,39 @@ public class DeletedUsersAdmin extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         JDBCServiceUser serviceUser = new JDBCServiceUser();
         response.setContentType("application/json;charset=UTF-8");
 
-        StringBuffer sb = new StringBuffer();
-        String line = null;
+        BaseInServlets baseInServlets = new BaseInServlets();
 
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+
+        StringBuilder sb = null;
+        try {
+            sb = baseInServlets.getRequest(request.getReader());
+        } catch (IOException e) {
+
         }
 
-
         String[] s = sb.toString().split("=");
+
         int id = Integer.parseInt(s[1]);
 
-       // log.info("get id which we get when click on accepted, id= " + id_invited);
-
-        if (s[0].equals("id_users_deleted")){
+        if (State.DELETED.name().equals(s[0])) {
 
             System.out.println("deleted");
             serviceUser.deletedUsers(id);
 
-            response.getWriter();
-        }else if(s[0].equals("id_users_suspend")){
+        } else if (State.SUSPEND.name().equals(s[0])) {
+
             System.out.println("suspend");
             serviceUser.suspendUser(id);
-        }else if(s[0].equals("id_users_unSuspend")){
+
+        } else if (State.UNSUSPEND.name().equals(s[0])) {
+
             System.out.println("unSuspend");
             serviceUser.anSuspendUser(id);
+
         }
 
     }

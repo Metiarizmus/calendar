@@ -1,5 +1,6 @@
 package entity;
 
+import enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,8 @@ public class User {
     @Getter @Setter private String password;
     @Getter @Setter private Role role;
     @Getter @Setter private int suspend;
+
+
 
     public User() {
 

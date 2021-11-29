@@ -1,14 +1,16 @@
 package servlets.userService;
 
-import DBConnection.*;
+
 import com.google.gson.Gson;
+import db.PropertyInf;
 import entity.Action;
-import entity.TypeAction;
+import enums.TypeAction;
 import entity.User;
-import helperData.HelperGetFullDate;
+import enums.StateProperties;
+import helper.HelperGetFullDate;
 import org.apache.log4j.Logger;
-import serviceJDBC.JDBCServiceAction;
-import serviceJDBC.JDBCServiceUser;
+import service.JDBCServiceAction;
+import service.JDBCServiceUser;
 import tls.Sender;
 
 import javax.servlet.*;
@@ -22,7 +24,9 @@ import java.util.*;
 public class ActionUser extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(ActionUser.class);
-
+    private JDBCServiceAction serviceAction = new JDBCServiceAction();
+    private JDBCServiceUser serviceUser = new JDBCServiceUser();
+    private PropertyInf propertyInf = new PropertyInf();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,9 +38,6 @@ public class ActionUser extends HttpServlet {
 
         response.setContentType("application/json;charset=UTF-8");
 
-        JDBCServiceAction serviceAction = new JDBCServiceAction();
-        JDBCServiceUser serviceUser = new JDBCServiceUser();
-
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("id_user");
 
@@ -46,7 +47,7 @@ public class ActionUser extends HttpServlet {
 
         String title = request.getParameter("title");
         String time = request.getParameter("time");
-        String dateWithoutTime = request.getParameter("var1");
+        String dateWithoutTime = request.getParameter("dateEvent");
         String descr = request.getParameter("description");
         String addGuest = request.getParameter("add_guest");
 
@@ -73,6 +74,7 @@ public class ActionUser extends HttpServlet {
             for (int i = 0; i < userEmailList.size(); i++) {
                 if (userEmailList.get(i).getEmail().equals(addGuest)) {
                     k = 1;
+                    break;
                 }
             }
 
@@ -83,7 +85,7 @@ public class ActionUser extends HttpServlet {
                 serviceAction.addAction(action, idToUser);
                 l = 1;
             } else {
-                String myEmail = new PropertyInf().getDataForEmail().getProperty("MY_EMAIL");
+                String myEmail = new PropertyInf().getDataFromProperties(StateProperties.EMAIL).getProperty("MY_EMAIL");
                 Sender sender = new Sender();
 
                 User emailFrom = serviceUser.getUserById(action.getUser().getId());
@@ -92,7 +94,9 @@ public class ActionUser extends HttpServlet {
 
                 Gson gson = new Gson();
                 String jsonEvent = gson.toJson(action);
-                sender.send("Вас приглосили на мероприятие в приложении Nikolai Calendar: ", jsonEvent, myEmail, addGuest);
+                String helloInvite = propertyInf.getDataFromProperties(StateProperties.SOME_TEXT).getProperty("invite.hello");
+
+                sender.send(helloInvite, jsonEvent, myEmail, addGuest);
                 log.info("send event to email");
                 System.out.println("send event to email");
                 l = 0;

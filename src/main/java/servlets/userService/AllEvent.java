@@ -2,9 +2,10 @@ package servlets.userService;
 
 import com.google.gson.Gson;
 import entity.Action;
-import entity.User;
-import serviceJDBC.JDBCServiceAction;
-import serviceJDBC.JDBCServiceUser;
+import enums.Role;
+import exceptions.NotCorrectRole;
+import service.JDBCServiceAction;
+import service.JDBCServiceUser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -32,22 +33,38 @@ public class AllEvent extends HttpServlet {
 
         List<Action> actionList = new JDBCServiceAction().getAllActionForUser(email);
 
-        List<Integer> idToUsers = new ArrayList<>();
+        boolean flag = false;
 
-        for (Action action : actionList) {
-            idToUsers.add(action.getIdInviteUsers());
+        if (Role.USER.equals(new JDBCServiceUser().getRoleUsersByEmail(email)) ||
+                Role.MANAGER.equals(new JDBCServiceUser().getRoleUsersByEmail(email)) ||
+                Role.ADMIN.equals(new JDBCServiceUser().getRoleUsersByEmail(email))
+        ) {
+            flag = true;
         }
 
 
-        for (int i = 0; i < idToUsers.size(); i++) {
-            actionList.get(i).setInvitedUsers(new JDBCServiceUser().getUserById(idToUsers.get(i)));
-        }
 
 
-        String json = new Gson().toJson(actionList);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        if (flag){
+            List<Integer> idToUsers = new ArrayList<>();
+
+            for (Action action : actionList) {
+                idToUsers.add(action.getIdInviteUsers());
+            }
+
+
+            for (int i = 0; i < idToUsers.size(); i++) {
+                actionList.get(i).setInvitedUsers(new JDBCServiceUser().getUserById(idToUsers.get(i)));
+            }
+
+
+            String json = new Gson().toJson(actionList);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json);
+
+        }throw new NotCorrectRole("incorrect role");
+
 
     }
 }

@@ -180,7 +180,7 @@ xhr1.onreadystatechange = function () {
 
 
     if (xhr1.status != 200) {
-        alert(xhr1.status + ': ' + xhr1.statusText);
+        //alert(xhr1.status + ': ' + xhr1.statusText);
     }
 
     xhr1.onprogress = function (event) {
@@ -332,7 +332,7 @@ function check_tab3() {
 
 function send_notif() {
 
-    const Vars = {var1: JSON.stringify(arrayData)};
+    const Vars = {dateEvent: JSON.stringify(arrayData)};
     const varsData = $.param(Vars);
 
     const formData = $('#form_tab3').serialize();
@@ -340,6 +340,7 @@ function send_notif() {
     const data = varsData + '&' + formData;
 
     const urlToNotification = window.location.protocol + '//' + window.location.host + "/calendar_manager_Web_exploded/actionUser";
+
 
     $.ajax({
         type: 'POST',
@@ -355,7 +356,7 @@ function send_notif() {
 
 function send_task() {
 
-    const Vars = {var1: JSON.stringify(arrayData)};
+    const Vars = {dateEvent: JSON.stringify(arrayData)};
     const varsData = $.param(Vars);
 
     const formData = $('#form_tab2').serialize();
@@ -378,7 +379,7 @@ function send_task() {
 
 function send_event() {
 
-    const Vars = {var1: JSON.stringify(arrayData)};
+    const Vars = {dateEvent: JSON.stringify(arrayData)};
     const varsData = $.param(Vars);
 
     const formData = $('#form_tab1').serialize();

@@ -13,7 +13,7 @@ accepted.forEach((item, index) => {
         $.ajax({
             url: urlToInviteAccepted,
             method: "POST",
-            data: {"id_invited_accepted": id},
+            data: {"ACCEPTED": id},
             success: function(data) {
                 console.log("good");
             }
@@ -33,7 +33,7 @@ reject.forEach((item, index) => {
         $.ajax({
             url: urlToInviteAccepted,
             method: "POST",
-            data: {"id_invited_reject": id},
+            data: {"REJECT": id},
             success: function(data) {
                 console.log("good");
             }

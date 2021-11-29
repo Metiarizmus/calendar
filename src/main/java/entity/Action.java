@@ -1,9 +1,8 @@
 package entity;
 
+import enums.TypeAction;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 public class Action {
     @Getter @Setter private int id;

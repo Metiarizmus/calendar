@@ -13,7 +13,7 @@ deleted.forEach((item, index) => {
         $.ajax({
             url: urlToInviteAccepted,
             method: "POST",
-            data: {"id_users_deleted": id},
+            data: {"DELETED": id},
             success: function(data) {
                 console.log("good");
             }
@@ -34,7 +34,7 @@ suspend.forEach((item, index) => {
             $.ajax({
                 url: urlToInviteAccepted,
                 method: "POST",
-                data: {"id_users_suspend": id},
+                data: {"SUSPEND": id},
                 success: function (data) {
                     console.log("good");
                 }
@@ -44,7 +44,7 @@ suspend.forEach((item, index) => {
             $.ajax({
                 url: urlToInviteAccepted,
                 method: "POST",
-                data: {"id_users_unSuspend": id},
+                data: {"UNSUSPEND": id},
                 success: function (data) {
                     console.log("good");
                 }
@@ -69,16 +69,16 @@ function addUser() {
 
 
     $.ajax({
-        type: 'POST',
         url: urlToRegistration,
+        method: "POST",
         data: data,
-        success: function(res){
-            alert ("user add")
-
+        error: function(res){
+            alert ("this email yet exist in the system")
         }
+
     })
 
-    location.reload();
+   // location.reload();
 
 }
 

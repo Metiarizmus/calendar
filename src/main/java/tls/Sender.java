@@ -1,7 +1,9 @@
 package tls;
 
 
-import DBConnection.PropertyInf;
+import db.PropertyInf;
+import enums.StateProperties;
+
 import java.util.Properties;
 
 import javax.mail.*;
@@ -12,8 +14,8 @@ public class Sender {
 
     private PropertyInf propertyInf = new PropertyInf();
 
-    private String username = propertyInf.getDataForEmail().getProperty("MY_EMAIL");
-    private String password = propertyInf.getDataForEmail().getProperty("PASSWORD_EMAIL");
+    private String username = propertyInf.getDataFromProperties(StateProperties.EMAIL).getProperty("MY_EMAIL");
+    private String password = propertyInf.getDataFromProperties(StateProperties.EMAIL).getProperty("PASSWORD_EMAIL");
     private Properties props;
 
     public Sender() {

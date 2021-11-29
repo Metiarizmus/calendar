@@ -1,16 +1,18 @@
 package servlets;
 
-import entity.Role;
+import enums.Role;
 import entity.User;
-import helperData.EmailValidator;
-import helperData.SessionCounter;
+import exceptions.NullDataUser;
+import helper.EmailValidator;
+import helper.SessionCounter;
 import org.apache.log4j.Logger;
-import serviceJDBC.JDBCServiceUser;
+import service.JDBCServiceUser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(name = "registration", value = "/registration")
 public class Registration extends HttpServlet {
@@ -24,6 +26,7 @@ public class Registration extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         EmailValidator validator = new EmailValidator();
         JDBCServiceUser serviceUser = new JDBCServiceUser();
 
@@ -35,24 +38,34 @@ public class Registration extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        if (firstName != "" && lastName != "" && password != ""){
+        if (firstName != "" && lastName != "" && password != "") {
+
             if (validator.validate(email)) {
 
-                User user = new User(firstName,lastName,email,password);
-                log.info("add user to db");
+                if (serviceUser.getUserByEmail(email) != 0) {
+                    response.setContentType("text/xml");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("this email yet exist in the system");
 
-                if (addUserFromAdmin == null){
-                    HttpSession session = request.getSession(true);
-                    session.setAttribute("id_user", email);
-                    SessionCounter counter = (SessionCounter) session.getAttribute(SessionCounter.COUNTER);
-                    response.sendRedirect("userMode");
-                }else {
+                } else {
+                    User user = new User(firstName, lastName, email, password);
+                    log.info("add user to db");
+
                     serviceUser.addUser(user, Role.USER);
-                    log.info("add user from admin mode");
+
+                    if (addUserFromAdmin == null) {
+                        HttpSession session = request.getSession(true);
+                        session.setAttribute("id_user", email);
+                        SessionCounter counter = (SessionCounter) session.getAttribute(SessionCounter.COUNTER);
+                        response.sendRedirect("userMode");
+                    } else {
+                        log.info("add user from admin mode");
+                    }
                 }
 
+
             }
-        }
+        } else throw new NullDataUser("something null");
 
 
     }

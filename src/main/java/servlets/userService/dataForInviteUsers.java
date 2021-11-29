@@ -3,8 +3,9 @@ package servlets.userService;
 import com.google.gson.Gson;
 import entity.Action;
 import entity.User;
-import serviceJDBC.JDBCServiceAction;
-import serviceJDBC.JDBCServiceUser;
+import helper.BaseInServlets;
+import service.JDBCServiceAction;
+import service.JDBCServiceUser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -29,18 +30,9 @@ public class dataForInviteUsers extends HttpServlet {
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("id_user");
 
-        List<Action> actionList = new JDBCServiceAction().getAllActionInvite(email);
-        List<Integer> idInvitedUsers = new ArrayList<>();
+        BaseInServlets baseInServlets = new BaseInServlets();
 
-        for (Action q : actionList) {
-            idInvitedUsers.add(q.getIdInviteUsers());
-        }
-
-        for (int i = 0; i < idInvitedUsers.size(); i++) {
-            User user = new JDBCServiceUser().getUserById(idInvitedUsers.get(i));
-
-            actionList.get(i).setInvitedUsers(user);
-        }
+        List<Action> actionList = baseInServlets.getDataForInvite(email);
 
         String json = new Gson().toJson(actionList);
         response.setContentType("application/json");

@@ -7,6 +7,6 @@
 
 
     <listener>
-        <listener-class>helperData.SessionCounter</listener-class>
+        <listener-class>helper.SessionCounter</listener-class>
     </listener>
 </web-app>
